@@ -30,9 +30,9 @@ A modular Nextflow DSL2 pipeline for paired-end NGS quality control and variant 
             │  (aggregate) │              └──────┬───────┘
             └──────────────┘                     │
                                                  ▼
-           ─ ─ ─ ─ ─ ─ ─ ─ ─             ┌──────────────┐
+           ─ ─ ─ ─ ─ ─ ─ ─ ─              ┌──────────────┐
            --qc_only stops here           │  SAMtools    │
-           ─ ─ ─ ─ ─ ─ ─ ─ ─             │  (sort+index)│
+           ─ ─ ─ ─ ─ ─ ─ ─ ─              │  (sort+index)│
                                           └──────┬───────┘
                                                  │
                                                  ▼
