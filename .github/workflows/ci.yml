@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-qc:
+    name: Test QC Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+
+      - name: Run QC-only pipeline
+        run: nextflow run main.nf -profile docker,test --qc_only
+
+      - name: Verify QC outputs
+        run: |
+          test -f results/fastqc/sample_R1_fastqc.html
+          test -f results/fastqc/sample_R2_fastqc.html
+          test -f results/multiqc/multiqc_report.html
+
+  test-full:
+    name: Test Full Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+
+      - name: Run full pipeline
+        run: nextflow run main.nf -profile docker,test
+
+      - name: Verify all outputs
+        run: |
+          test -f results/fastqc/sample_R1_fastqc.html
+          test -f results/multiqc/multiqc_report.html
+          test -f results/alignments/test_sample.sorted.bam
+          test -f results/variants/test_sample.vcf.gz
