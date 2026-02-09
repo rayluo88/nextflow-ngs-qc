@@ -164,8 +164,17 @@ All processes run in versioned BioContainers from [Quay.io](https://quay.io/orga
 
 ### CI/CD
 
-- **GitHub Actions** — Automated testing on push/PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml))
-- **Jenkins** — Declarative pipeline for on-premise CI ([`Jenkinsfile`](Jenkinsfile))
+- **GitHub Actions CI** — Automated testing on push/PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml))
+- **GitHub Actions CD** — Automated releases on version tags; tests must pass before release is created ([`.github/workflows/release.yml`](.github/workflows/release.yml))
+- **Jenkins CI** — Declarative pipeline for on-premise CI ([`Jenkinsfile`](Jenkinsfile))
+
+**Creating a release:**
+
+```bash
+git tag -a v1.0.0 -m "v1.0.0 - Initial release"
+git push origin v1.0.0
+# → Release workflow runs tests → creates GitHub Release automatically
+```
 
 ---
 
@@ -191,7 +200,7 @@ nextflow-ngs-qc/
 │   └── qc.nf              # QC subworkflow (FastQC → MultiQC)
 ├── test_data/              # Bundled test FASTQ + reference
 ├── conf/                   # Additional config files
-├── .github/workflows/      # GitHub Actions CI
+├── .github/workflows/      # GitHub Actions CI + CD (release)
 └── README.md
 ```
 
