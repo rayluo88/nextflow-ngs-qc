@@ -12,12 +12,12 @@ A modular Nextflow DSL2 pipeline for paired-end NGS quality control and variant 
 
 ```
                          ┌─────────────────┐
-                         │  Input FASTQs    │
-                         │  (paired-end)    │
+                         │  Input FASTQs   │
+                         │  (paired-end)   │
                          └────────┬────────┘
                                   │
                     ┌─────────────┴─────────────┐
-                    ▼                             ▼
+                    ▼                            ▼
             ┌──────────────┐              ┌──────────────┐
             │   FastQC     │              │  BWA Index   │
             │   (per-sample│              │  (reference) │
