@@ -4,7 +4,7 @@
 [![Nextflow](https://img.shields.io/badge/Nextflow-%E2%89%A522.10-blue?logo=nextflow)](https://www.nextflow.io/)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/)
 
-A modular Nextflow DSL2 pipeline for paired-end NGS quality control and variant calling, built with [nf-core](https://nf-co.re/) conventions.
+A modular NGS quality control and variant calling pipeline in Nextflow DSL2. It takes paired-end FASTQ files, runs FastQC and MultiQC for quality assessment, and optionally extends to alignment with BWA-MEM and variant calling with bcftools. Every tool runs in its own versioned Docker container for reproducibility, and it has CI/CD with both GitHub Actions and Jenkins. Built with [nf-core](https://nf-co.re/) conventions.
 
 ---
 

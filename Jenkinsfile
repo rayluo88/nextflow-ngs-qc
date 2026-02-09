@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         NXF_VER = '25.10.3'
+        PATH = "/usr/local/bin:/opt/homebrew/bin:${env.HOME}/.local/bin:${env.PATH}"
     }
 
     stages {
