@@ -1,0 +1,40 @@
+nextflow_pipeline {
+
+    name "Test full pipeline (QC + alignment + variant calling)"
+    script "main.nf"
+
+    test("Should produce all outputs with test profile") {
+
+        setup {
+            def csvFile = new File("${outputDir}/samples.csv")
+            csvFile.text = "sample_id,fastq_1,fastq_2\ntest_sample,${projectDir}/test_data/sample_R1.fastq.gz,${projectDir}/test_data/sample_R2.fastq.gz\n"
+        }
+
+        when {
+            params {
+                input     = "${outputDir}/samples.csv"
+                reference = "${projectDir}/test_data/genome.fa"
+                outdir    = "$outputDir/results"
+            }
+        }
+
+        then {
+            assert workflow.success
+
+            // QC outputs
+            assert path("$outputDir/results/fastqc").exists()
+            assert path("$outputDir/results/multiqc/multiqc_report.html").exists()
+
+            // Alignment outputs
+            assert path("$outputDir/results/alignments").exists()
+            def bamFiles = path("$outputDir/results/alignments").list()
+            assert bamFiles.any { it.toString().endsWith(".sorted.bam") }
+            assert bamFiles.any { it.toString().endsWith(".sorted.bam.bai") }
+
+            // Variant calling outputs
+            assert path("$outputDir/results/variants").exists()
+            def vcfFiles = path("$outputDir/results/variants").list()
+            assert vcfFiles.any { it.toString().endsWith(".vcf.gz") }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+nextflow_process {
+
+    name "Test FASTQC process"
+    script "modules/fastqc.nf"
+    process "FASTQC"
+
+    test("Should produce FastQC HTML and ZIP reports") {
+
+        when {
+            process {
+                """
+                input[0] = tuple("test_sample",
+                    file("${projectDir}/test_data/sample_R1.fastq.gz"),
+                    file("${projectDir}/test_data/sample_R2.fastq.gz"))
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.reports
+            // Should produce 4 files: HTML + ZIP for each of R1 and R2
+            assert process.out.reports.get(0).size() == 4
+            assert process.out.reports.get(0).any { it.endsWith("_fastqc.html") }
+            assert process.out.reports.get(0).any { it.endsWith("_fastqc.zip") }
+        }
+    }
+}

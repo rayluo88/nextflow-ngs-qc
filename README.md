@@ -16,7 +16,7 @@ A modular NGS quality control and variant calling pipeline in Nextflow DSL2. It 
                          │  (paired-end)   │
                          └────────┬────────┘
                                   │
-                    ┌─────────────┴─────────────┐
+                    ┌─────────────┴──────────────┐
                     ▼                            ▼
             ┌──────────────┐              ┌──────────────┐
             │   FastQC     │              │  BWA Index   │
@@ -162,6 +162,25 @@ All processes run in versioned BioContainers from [Quay.io](https://quay.io/orga
 | SAMTOOLS_SORT | SAMtools | 1.21 | `quay.io/biocontainers/samtools:1.21--h50ea8bc_0` |
 | VARIANT_CALL | bcftools | 1.21 | `quay.io/biocontainers/bcftools:1.21--h8b25389_0` |
 
+### Testing with nf-test
+
+Module-level and workflow-level tests using [nf-test](https://www.nf-test.com/):
+
+```bash
+# Run all tests
+nf-test test
+
+# Run a specific test
+nf-test test tests/modules/fastqc.nf.test
+```
+
+| Test | Scope | What it verifies |
+|------|-------|------------------|
+| `tests/modules/fastqc.nf.test` | Process | FastQC produces HTML + ZIP reports |
+| `tests/modules/bwa_align.nf.test` | Process | BWA index creates all index files |
+| `tests/workflows/full_pipeline.nf.test` | Pipeline | Full run produces QC, BAM, and VCF outputs |
+| `tests/workflows/qc_only.nf.test` | Pipeline | QC-only mode skips alignment and variant calling |
+
 ### CI/CD
 
 - **GitHub Actions CI** — Automated testing on push/PR ([`.github/workflows/ci.yml`](.github/workflows/ci.yml))
@@ -198,6 +217,10 @@ nextflow-ngs-qc/
 │   └── variant_call.nf
 ├── workflows/
 │   └── qc.nf              # QC subworkflow (FastQC → MultiQC)
+├── tests/                  # nf-test module and workflow tests
+│   ├── modules/
+│   └── workflows/
+├── nf-test.config          # nf-test configuration
 ├── test_data/              # Bundled test FASTQ + reference
 ├── conf/                   # Additional config files
 ├── .github/workflows/      # GitHub Actions CI + CD (release)

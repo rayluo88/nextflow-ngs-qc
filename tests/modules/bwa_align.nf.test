@@ -1,0 +1,29 @@
+nextflow_process {
+
+    name "Test BWA_INDEX process"
+    script "modules/bwa_align.nf"
+    process "BWA_INDEX"
+
+    test("Should produce BWA index files") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/test_data/genome.fa")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.out.index
+            def indexFiles = process.out.index.get(0).flatten()
+            // BWA index produces .amb, .ann, .bwt, .pac, .sa files
+            assert indexFiles.any { it.endsWith(".amb") }
+            assert indexFiles.any { it.endsWith(".ann") }
+            assert indexFiles.any { it.endsWith(".bwt") }
+            assert indexFiles.any { it.endsWith(".pac") }
+            assert indexFiles.any { it.endsWith(".sa") }
+        }
+    }
+}

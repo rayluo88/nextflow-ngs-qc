@@ -1,0 +1,34 @@
+nextflow_pipeline {
+
+    name "Test QC-only mode"
+    script "main.nf"
+
+    test("Should produce only QC outputs when --qc_only is set") {
+
+        setup {
+            // Create samples CSV with absolute paths for nf-test context
+            def csvFile = new File("${outputDir}/samples.csv")
+            csvFile.text = "sample_id,fastq_1,fastq_2\ntest_sample,${projectDir}/test_data/sample_R1.fastq.gz,${projectDir}/test_data/sample_R2.fastq.gz\n"
+        }
+
+        when {
+            params {
+                input   = "${outputDir}/samples.csv"
+                outdir  = "$outputDir/results"
+                qc_only = true
+            }
+        }
+
+        then {
+            assert workflow.success
+
+            // QC outputs should exist
+            assert path("$outputDir/results/fastqc").exists()
+            assert path("$outputDir/results/multiqc/multiqc_report.html").exists()
+
+            // Alignment and variant outputs should NOT exist
+            assert !path("$outputDir/results/alignments").exists()
+            assert !path("$outputDir/results/variants").exists()
+        }
+    }
+}
